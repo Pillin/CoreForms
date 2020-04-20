@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { PurpleButton } from "../Buttons";
 import { RutInput, PasswordInput } from "../Input";
-import { onInputChange, isDisabledSubmitButton } from "../../utils/forms";
+import { onInputChange } from "../../utils/forms";
 
 const FormContainer = styled.form`
   display: flex;
@@ -10,24 +10,21 @@ const FormContainer = styled.form`
   width: 320px;
 `;
 
-const LoginForm = (props: { formik: any }) => {
-  const { formik } = props;
+const LoginForm = (props: { formik: any; disabled: boolean }) => {
+  const { formik, disabled } = props;
   const { values, errors } = formik;
 
   const onChange = onInputChange(formik);
 
   return (
-    <FormContainer>
+    <FormContainer onSubmit={formik.handleSubmit}>
       <RutInput onChange={onChange} value={values.rut} error={errors.rut} />
       <PasswordInput
         onChange={onChange}
         value={values.password}
         error={errors.password}
       />
-      <PurpleButton
-        label="Ingresar"
-        disabled={isDisabledSubmitButton(formik)}
-      />
+      <PurpleButton label="Ingresar" disabled={disabled} />
     </FormContainer>
   );
 };

@@ -1,25 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { LoginForm } from "../Forms";
 import { useFormik } from "formik";
 import { LoginSchema } from "../../schemas";
+import { useCaptcha } from "../../utils/ReCaptcha/hooks";
+import { isDisabledSubmitButton } from "../../utils/forms";
 
 const Login = () => {
+  const [tokenNumber, setTokenNumber] = useState(-1);
   const initialValues = {
     rut: "",
-    password: ""
+    password: "",
   };
 
+  const token = useCaptcha({
+    tokenNumber,
+    action: "login",
+  });
+
   const onSubmit = () => {
-    alert("enviado");
+    alert(`enviado  ${token}`);
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema: LoginSchema,
-    onSubmit
+    onSubmit,
   });
+  const disabled = isDisabledSubmitButton(formik);
 
-  return <LoginForm formik={formik} />;
+  useEffect(() => {
+    setTokenNumber(tokenNumber + 1);
+  }, [disabled]);
+
+  return (
+    <>
+      <LoginForm formik={formik} disabled={disabled} />
+    </>
+  );
 };
 
 export default Login;
